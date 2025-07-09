@@ -56,3 +56,12 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run test -- --run
+
+  observability_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Prometheus lint
+        run: promtool check config infra/prometheus/prometheus.yml
+      - name: Grafana dashboard lint
+        run: python -m json.tool infra/grafana/provisioning/dashboards/smartport_stats.json > /dev/null

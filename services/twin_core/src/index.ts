@@ -1,5 +1,9 @@
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { expressMiddleware } from '@apollo/server/express4';
+import express from 'express';
+import promBundle from 'express-prom-bundle';
+import { collectDefaultMetrics } from 'prom-client';
+import http from 'http';
 import { createClient } from 'redis';
 import { io } from 'socket.io-client';
 import { typeDefs, resolvers } from './schema.js';
@@ -18,8 +22,17 @@ async function main() {
     resolvers: resolvers(redis),
     plugins: [authPlugin()],
   });
-  const { url } = await startStandaloneServer(server, { listen: { port: 8030 } });
-  console.log(`🚀 Twin-core ready at ${url}`);
+  await server.start();
+
+  collectDefaultMetrics();
+  const app = express();
+  app.use(promBundle({ includeMethod: true }));
+  app.use(express.json());
+  app.use('/', expressMiddleware(server));
+
+  const httpServer = http.createServer(app);
+  await new Promise<void>((resolve) => httpServer.listen(8030, resolve));
+  console.log('🚀 Twin-core ready at http://localhost:8030/');
 
   const socket = io(WS_ENDPOINT);
   socket.on('connect', () => console.log('WS connected'));

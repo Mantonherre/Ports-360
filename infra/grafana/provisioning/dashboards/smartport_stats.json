@@ -1,0 +1,8 @@
+{
+  "title": "SmartPort Stats",
+  "panels": [],
+  "timezone": "browser",
+  "schemaVersion": 37,
+  "version": 1,
+  "refresh": "30s"
+}

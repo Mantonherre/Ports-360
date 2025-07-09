@@ -2,6 +2,8 @@ import json
 import os
 from typing import List
 
+from prometheus_client import Counter, start_http_server
+
 from fastapi import FastAPI, HTTPException, Depends
 from asyncio_mqtt import Client
 from jsonschema import validate, ValidationError
@@ -16,6 +18,9 @@ MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "")
 
 app = FastAPI(title="Context Adapter")
 
+INGEST_REQUESTS_TOTAL = Counter("ingest_requests_total", "Total ingest requests")
+MQTT_MESSAGES_TOTAL = Counter("mqtt_messages_total", "MQTT messages published")
+
 mqtt_client = Client(
     MQTT_HOST, MQTT_PORT, username=MQTT_USERNAME or None, password=MQTT_PASSWORD or None
 )
@@ -24,6 +29,7 @@ cache: dict[str, dict] = {}
 
 @app.on_event("startup")
 async def startup():
+    start_http_server(8001)
     await mqtt_client.connect()
 
 
@@ -48,6 +54,7 @@ def detect_type(entity: dict) -> str:
 
 @app.post("/events/ingest", status_code=202)
 async def ingest(entities: List[dict], _=Depends(auth_dependency)):
+    INGEST_REQUESTS_TOTAL.inc()
     for entity in entities:
         entity_type = detect_type(entity)
         try:
@@ -57,6 +64,7 @@ async def ingest(entities: List[dict], _=Depends(auth_dependency)):
         topic = f"smartport/{entity_type}/{entity['id']}"
         payload = json.dumps(entity)
         await mqtt_client.publish(topic, payload)
+        MQTT_MESSAGES_TOTAL.inc()
         cache[(entity_type, entity["id"])] = entity
     return {"status": "accepted"}
 
@@ -76,6 +84,7 @@ async def patch_entity(type: str, id: str, patch: dict, _=Depends(auth_dependenc
     topic = f"smartport/{type}/{id}"
     payload = json.dumps(patch)
     await mqtt_client.publish(topic, payload)
+    MQTT_MESSAGES_TOTAL.inc()
     # merge into cache if exists
     if (type, id) in cache:
         cache[(type, id)].update(patch)

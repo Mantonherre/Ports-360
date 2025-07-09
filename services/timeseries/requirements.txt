@@ -6,3 +6,4 @@ asyncpg
 psycopg[binary]
 geoalchemy2
 python-jose[cryptography]
+prometheus-client

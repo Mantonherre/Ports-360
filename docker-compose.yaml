@@ -33,11 +33,27 @@ services:
 
   mosquitto:
     image: eclipse-mosquitto:2
+    container_name: mqtt
     ports:
       - "1883:1883"
     volumes:
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
+
+  timeseries:
+    build: ./services/timeseries
+    depends_on:
+      - postgres
+      - mosquitto
+    environment:
+      PGHOST: postgres
+      PGUSER: postgres
+      PGPASSWORD: smartport
+      PGDATABASE: postgres
+      MQTT_HOST: mqtt
+      MQTT_PORT: 1883
+    ports:
+      - "8020:8020"
 
   # sensor-sim:
   #   build: ./tools/sensor_sim

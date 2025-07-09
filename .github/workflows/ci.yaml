@@ -22,10 +22,14 @@ jobs:
         run: pip install -r requirements-dev.txt
       - name: Install sensor simulator requirements
         run: pip install -r tools/sensor_sim/requirements.txt
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - name: Black format check
         run: black --check .
       - name: Ruff lint
         run: ruff check .
+      - name: Run migrations
+        run: alembic -c services/timeseries/alembic.ini upgrade head
       - name: Run tests
         run: pytest -q
       - name: Build and run compose

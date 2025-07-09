@@ -5,3 +5,4 @@ sqlalchemy>=2
 asyncpg
 psycopg[binary]
 geoalchemy2
+python-jose[cryptography]

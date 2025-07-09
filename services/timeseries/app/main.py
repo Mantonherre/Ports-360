@@ -4,12 +4,13 @@ import os
 from datetime import datetime
 
 from asyncio_mqtt import Client
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from sqlalchemy import insert, func
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from .models import Base, SensorSnapshot, EnergySnapshot, BathySnapshot
+from libs.auth_middleware import auth_dependency
 
 PGHOST = os.getenv("PGHOST", "postgres")
 PGUSER = os.getenv("PGUSER", "postgres")
@@ -31,7 +32,7 @@ def health() -> dict:
 
 
 @app.get("/health")
-async def health_endpoint():
+async def health_endpoint(_=Depends(auth_dependency)):
     return health()
 
 

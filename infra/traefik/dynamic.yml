@@ -1,0 +1,47 @@
+http:
+  routers:
+    api:
+      rule: "Host(`smartport.local`) && PathPrefix(`/api`)"
+      service: context-adapter
+      entryPoints:
+        - websecure
+      tls: {}
+    gql:
+      rule: "Host(`smartport.local`) && PathPrefix(`/gql`)"
+      service: twin-core
+      entryPoints:
+        - websecure
+      tls: {}
+    db:
+      rule: "Host(`smartport.local`) && PathPrefix(`/db`)"
+      service: timeseries
+      entryPoints:
+        - websecure
+      tls: {}
+    dashboard:
+      rule: "Host(`smartport.local`) && PathPrefix(`/`)"
+      service: dashboard
+      entryPoints:
+        - websecure
+      tls: {}
+  services:
+    context-adapter:
+      loadBalancer:
+        servers:
+          - url: http://context-adapter:8010
+    twin-core:
+      loadBalancer:
+        servers:
+          - url: http://twin-core:8030
+    timeseries:
+      loadBalancer:
+        servers:
+          - url: http://timeseries:8020
+    dashboard:
+      loadBalancer:
+        servers:
+          - url: http://dashboard:80
+tls:
+  certificates:
+    - certFile: /certs/local.crt
+      keyFile: /certs/local.key

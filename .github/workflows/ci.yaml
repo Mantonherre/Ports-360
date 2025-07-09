@@ -65,10 +65,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install promtool
+      - name: Download promtool
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y prometheus
+          PROM_VER=$(curl -s https://api.github.com/repos/prometheus/prometheus/releases/latest | grep '"tag_name":' | cut -d" -f4)
+          curl -sL https://github.com/prometheus/prometheus/releases/download/${PROM_VER}/prometheus-${PROM_VER:1}.linux-amd64.tar.gz | tar xz
+          sudo mv prometheus-*/promtool /usr/local/bin/promtool
           promtool --version
       - name: Prometheus lint
         run: promtool check config infra/prometheus/prometheus.yml

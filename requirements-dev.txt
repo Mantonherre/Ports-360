@@ -7,3 +7,7 @@ pydantic
 pytest-jsonschema
 jsonschema
 PyYAML
+pytest-asyncio
+httpx
+asyncio-mqtt
+asgi_lifespan

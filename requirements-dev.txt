@@ -4,3 +4,6 @@ pytest
 fastapi
 uvicorn[standard]
 pydantic
+pytest-jsonschema
+jsonschema
+PyYAML

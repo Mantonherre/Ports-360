@@ -1,0 +1,106 @@
+openapi: 3.1.0
+info:
+  title: Smart Port API
+  version: 0.1.0
+paths:
+  /entities/{type}/{id}:
+    get:
+      summary: Get entity by type and id
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieved entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entity'
+    patch:
+      summary: Update entity
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "204":
+          description: Updated
+  /events/ingest:
+    post:
+      summary: Bulk ingest events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Entity'
+      responses:
+        "202":
+          description: Accepted
+  /auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required: [username, password]
+      responses:
+        "200":
+          description: Access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+components:
+  schemas:
+    Entity:
+      oneOf:
+        - $ref: '#/components/schemas/PortArea'
+        - $ref: '#/components/schemas/Sensor'
+        - $ref: '#/components/schemas/EnergyAsset'
+        - $ref: '#/components/schemas/Vessel'
+        - $ref: '#/components/schemas/BathyPoint'
+    PortArea:
+      $ref: '../domain/ngsi-ld.yaml#/$defs/PortArea'
+    Sensor:
+      $ref: '../domain/ngsi-ld.yaml#/$defs/Sensor'
+    EnergyAsset:
+      $ref: '../domain/ngsi-ld.yaml#/$defs/EnergyAsset'
+    Vessel:
+      $ref: '../domain/ngsi-ld.yaml#/$defs/Vessel'
+    BathyPoint:
+      $ref: '../domain/ngsi-ld.yaml#/$defs/BathyPoint'

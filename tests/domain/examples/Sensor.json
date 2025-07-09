@@ -1,0 +1,8 @@
+{
+  "id": "sensor:1",
+  "type": "temperature",
+  "location": {"type": "Point", "coordinates": [0, 0]},
+  "measuredProperty": "temperature",
+  "unit": "C",
+  "lastValue": 25.5
+}

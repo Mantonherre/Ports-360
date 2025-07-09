@@ -1,0 +1,49 @@
+name: Performance
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  perf:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:24-dind
+        options: --privileged
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install locust==2.26 websocket-client
+      - name: Install k6
+        run: |
+          curl -L https://github.com/grafana/k6/releases/download/v0.50.0/k6-v0.50.0-linux-amd64.tar.gz -o k6.tgz
+          tar -xzf k6.tgz
+          sudo mv k6-v0.50.0-linux-amd64/k6 /usr/local/bin/k6
+      - name: Build stack
+        run: docker compose up -d --build
+      - name: Run Locust
+        run: |
+          locust -f tests/performance/locustfile.py --headless -u 80 -r 80 -t 2m --host http://localhost:8010 --csv locust
+      - name: Run k6 soak
+        run: k6 run tests/performance/k6_script.js --out csv=k6.csv
+      - name: Run pgbench
+        run: tests/performance/pgbench.sh
+      - name: Docker stats
+        run: docker stats --no-stream > docker_stats.txt
+      - name: Upload artefacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: perf-report
+          path: |
+            k6.csv
+            locust_stats.csv
+            locust_stats_history.csv
+            docker_stats.txt
+      - name: Check SLA
+        run: python tests/performance/check_sla.py

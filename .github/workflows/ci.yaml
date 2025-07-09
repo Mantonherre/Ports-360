@@ -32,12 +32,13 @@ jobs:
         run: alembic -c services/timeseries/alembic.ini upgrade head
       - name: Run tests
         run: pytest -q
-      - name: Snyk scan
-        uses: snyk/actions@v3
-        with:
-          command: test --all-projects --severity-threshold=high
+      - uses: snyk/actions/setup@v2
+      - uses: snyk/actions/scan@v2
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          sarif: true
+          fail-on: high
       - name: Build and run compose
         run: |
           docker compose up -d --build
@@ -61,6 +62,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install promtool
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y prometheus
       - name: Prometheus lint
         run: promtool check config infra/prometheus/prometheus.yml
       - name: Grafana dashboard lint

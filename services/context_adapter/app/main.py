@@ -2,11 +2,12 @@ import json
 import os
 from typing import List
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from asyncio_mqtt import Client
 from jsonschema import validate, ValidationError
 
 from .schema_cache import get_schema
+from libs.auth_middleware import auth_dependency
 
 MQTT_HOST = os.getenv("MQTT_HOST", "mqtt")
 MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))
@@ -46,7 +47,7 @@ def detect_type(entity: dict) -> str:
 
 
 @app.post("/events/ingest", status_code=202)
-async def ingest(entities: List[dict]):
+async def ingest(entities: List[dict], _=Depends(auth_dependency)):
     for entity in entities:
         entity_type = detect_type(entity)
         try:
@@ -61,7 +62,7 @@ async def ingest(entities: List[dict]):
 
 
 @app.get("/entities/{type}/{id}")
-async def get_entity(type: str, id: str):
+async def get_entity(type: str, id: str, _=Depends(auth_dependency)):
     entity = cache.get((type, id))
     if not entity:
         raise HTTPException(status_code=404)
@@ -69,7 +70,7 @@ async def get_entity(type: str, id: str):
 
 
 @app.patch("/entities/{type}/{id}", status_code=202)
-async def patch_entity(type: str, id: str, patch: dict):
+async def patch_entity(type: str, id: str, patch: dict, _=Depends(auth_dependency)):
     if not isinstance(patch, dict):
         raise HTTPException(status_code=400, detail="invalid patch")
     topic = f"smartport/{type}/{id}"

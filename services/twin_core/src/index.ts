@@ -3,6 +3,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { createClient } from 'redis';
 import { io } from 'socket.io-client';
 import { typeDefs, resolvers } from './schema.js';
+import { authPlugin } from './auth.js';
 
 const WS_ENDPOINT = process.env.WS_ENDPOINT || 'ws://localhost:8010';
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
@@ -12,7 +13,11 @@ async function main() {
   redis.on('error', (err) => console.error('Redis error', err));
   await redis.connect();
 
-  const server = new ApolloServer({ typeDefs, resolvers: resolvers(redis) });
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers: resolvers(redis),
+    plugins: [authPlugin()],
+  });
   const { url } = await startStandaloneServer(server, { listen: { port: 8030 } });
   console.log(`🚀 Twin-core ready at ${url}`);
 

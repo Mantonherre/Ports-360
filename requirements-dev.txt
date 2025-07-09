@@ -18,3 +18,4 @@ asyncpg
 psycopg[binary]
 geoalchemy2
 alembic
+python-jose[cryptography]

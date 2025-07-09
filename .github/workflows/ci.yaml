@@ -32,6 +32,12 @@ jobs:
         run: alembic -c services/timeseries/alembic.ini upgrade head
       - name: Run tests
         run: pytest -q
+      - name: Snyk scan
+        uses: snyk/actions@v3
+        with:
+          command: test --all-projects --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Build and run compose
         run: |
           docker compose up -d --build

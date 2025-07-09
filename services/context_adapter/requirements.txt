@@ -4,3 +4,4 @@ uvicorn[standard]
 asyncio-mqtt
 jsonschema
 PyYAML
+python-jose[cryptography]

@@ -9,10 +9,15 @@ microservices and a React front-end with Docker based development and CI.
 git clone <repo-url>
 cd smartport
 # or if already inside
+cp infra/.env.example infra/.env
 docker compose up --build
 ```
 
 The sample FastAPI service is available at [http://localhost:8000/docs](http://localhost:8000/docs).
+
+Add `smartport.local` to `/etc/hosts` pointing to `127.0.0.1` to access the stack through Traefik using HTTPS.
+
+All passwords are defined in `infra/.env`. Duplicate `infra/.env.example` and adjust values before running the stack.
 
 
 ## Cómo ejecutar context-adapter

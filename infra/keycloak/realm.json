@@ -1,0 +1,46 @@
+{
+  "realm": "smartport",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      {"name": "admin"},
+      {"name": "viewer"}
+    ]
+  },
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "credentials": [
+        {"type": "password", "value": "admin", "temporary": false}
+      ],
+      "realmRoles": ["admin"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "context-adapter",
+      "secret": "context-adapter-secret",
+      "serviceAccountsEnabled": true,
+      "publicClient": false
+    },
+    {
+      "clientId": "timeseries",
+      "secret": "timeseries-secret",
+      "serviceAccountsEnabled": true,
+      "publicClient": false
+    },
+    {
+      "clientId": "twin-core",
+      "secret": "twin-core-secret",
+      "serviceAccountsEnabled": true,
+      "publicClient": false
+    },
+    {
+      "clientId": "dashboard",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true
+    }
+  ]
+}

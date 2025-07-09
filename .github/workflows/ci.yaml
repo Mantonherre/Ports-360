@@ -36,3 +36,17 @@ jobs:
         run: |
           docker compose up -d --build
           docker compose ps
+
+  build_dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ui/dashboard
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test -- --run

@@ -13,3 +13,8 @@ asyncio-mqtt
 asgi_lifespan
 click
 paho-mqtt<2
+sqlalchemy>=2
+asyncpg
+psycopg[binary]
+geoalchemy2
+alembic

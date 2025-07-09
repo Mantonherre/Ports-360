@@ -39,6 +39,14 @@ services:
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
 
+  # sensor-sim:
+  #   build: ./tools/sensor_sim
+  #   environment:
+  #     MQTT_HOST: mqtt
+  #     MQTT_PORT: 1883
+  #   depends_on:
+  #     - mosquitto
+
   keycloak:
     image: keycloak:24
     command: start-dev

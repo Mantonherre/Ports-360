@@ -43,3 +43,11 @@ Install development dependencies and execute `pytest`:
 pip install -r requirements-dev.txt
 pytest
 ```
+
+## Uso del simulador de sensores
+
+Para generar datos de prueba puedes ejecutar el simulador:
+
+```bash
+python tools/sensor_sim/sensor_sim.py --config tools/sensor_sim/config.yaml --mqtt-host localhost --rate 1
+```

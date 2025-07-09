@@ -1,0 +1,16 @@
+rate: 1
+entities:
+  - entity_type: Sensor
+    id: sensor:1
+    sensor_type: temperature
+    unit: C
+    measuredProperty: temperature
+    location: [0, 0]
+  - entity_type: EnergyAsset
+    id: asset:1
+    kind: battery
+    capacity_kW: 100
+  - entity_type: BathyPoint
+    id: bathy:1
+    location: [0, 0]
+    depth_m: 20

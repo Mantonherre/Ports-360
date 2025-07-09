@@ -11,3 +11,5 @@ pytest-asyncio
 httpx
 asyncio-mqtt
 asgi_lifespan
+click
+paho-mqtt<2

@@ -20,6 +20,8 @@ jobs:
           python-version: '3.12'
       - name: Install dev requirements
         run: pip install -r requirements-dev.txt
+      - name: Install sensor simulator requirements
+        run: pip install -r tools/sensor_sim/requirements.txt
       - name: Black format check
         run: black --check .
       - name: Ruff lint

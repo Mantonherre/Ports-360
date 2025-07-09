@@ -1,0 +1,4 @@
+asyncio-mqtt
+paho-mqtt<2
+click
+PyYAML

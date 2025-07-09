@@ -1,0 +1,26 @@
+name: run_locust
+on:
+  workflow_call:
+    inputs:
+      host:
+        required: true
+        type: string
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Locust
+        run: pip install locust==2.26 websocket-client
+      - name: Run Locust
+        run: |
+          locust -f tests/performance/locustfile.py --headless \
+            -u 80 -r 80 -t 2m --host ${{ inputs.host }} \
+            --csv locust
+      - uses: actions/upload-artifact@v3
+        with:
+          name: locust-results
+          path: |
+            locust_stats.csv
+            locust_stats_history.csv
+            locust_failures.csv

@@ -15,6 +15,17 @@ docker compose up --build
 The sample FastAPI service is available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 
+## Cómo ejecutar context-adapter
+
+Ejecuta el microservicio y el broker MQTT con Docker Compose:
+
+```bash
+docker compose up --build context-adapter mosquitto
+```
+
+El servicio quedará disponible en `http://localhost:8010`.
+
+
 ## API documentation
 
 The OpenAPI specification lives under `docs/api/openapi.yaml`. To generate an

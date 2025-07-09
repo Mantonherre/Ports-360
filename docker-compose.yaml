@@ -11,6 +11,15 @@ services:
     volumes:
       - ./services/template_service:/app
 
+  context-adapter:
+    build: ./services/context_adapter
+    ports:
+      - "8010:8010"
+    environment:
+      MQTT_HOST: mqtt
+    depends_on:
+      - mosquitto
+
   postgres:
     image: postgres:16
     ports:

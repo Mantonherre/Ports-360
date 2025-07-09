@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:24-dind
+        options: >-
+          --privileged
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dev requirements
+        run: pip install -r requirements-dev.txt
+      - name: Black format check
+        run: black --check .
+      - name: Ruff lint
+        run: ruff check .
+      - name: Run tests
+        run: pytest -q
+      - name: Build and run compose
+        run: |
+          docker compose up -d --build
+          docker compose ps

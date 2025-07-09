@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  template_service:
+    build: ./services/template_service
+    container_name: template_service
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./services/template_service:/app
+
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=smartport
+      - POSTGRES_PASSWORD=smartport
+      - POSTGRES_DB=smartport
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
+  keycloak:
+    image: keycloak:24
+    command: start-dev
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+
+  wiremock:
+    image: wiremock/wiremock:3
+    ports:
+      - "9090:8080"
+    volumes:
+      - wiremock_data:/home/wiremock
+
+volumes:
+  pgdata:
+  mosquitto_data:
+  mosquitto_log:
+  keycloak_data:
+  wiremock_data:

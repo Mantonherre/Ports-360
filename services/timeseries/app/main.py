@@ -2,6 +2,9 @@ import asyncio
 import json
 import os
 from datetime import datetime
+from time import perf_counter
+
+from prometheus_client import Counter, Histogram, start_http_server
 
 from asyncio_mqtt import Client
 from fastapi import FastAPI, Depends
@@ -9,7 +12,7 @@ from sqlalchemy import insert, func
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from .models import Base, SensorSnapshot, EnergySnapshot, BathySnapshot
+from .models import SensorSnapshot, EnergySnapshot, BathySnapshot
 from libs.auth_middleware import auth_dependency
 
 PGHOST = os.getenv("PGHOST", "postgres")
@@ -25,6 +28,9 @@ engine = create_async_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 app = FastAPI(title="Timeseries Writer")
+
+MQTT_MESSAGES_TOTAL = Counter("mqtt_messages_total", "MQTT messages processed")
+DB_INSERT_SECONDS = Histogram("db_insert_seconds", "DB insert duration")
 
 
 def health() -> dict:
@@ -50,6 +56,7 @@ async def flush():
         BUFFER["bathy"] = []
     if not (sensor_rows or energy_rows or bathy_rows):
         return
+    start = perf_counter()
     async with SessionLocal() as session:
         async with session.begin():
             if sensor_rows:
@@ -96,6 +103,7 @@ async def flush():
                         for r in bathy_rows
                     ],
                 )
+    DB_INSERT_SECONDS.observe(perf_counter() - start)
 
 
 async def flush_worker():
@@ -156,6 +164,7 @@ async def mqtt_worker():
                     )
                     async with LOCK:
                         BUFFER["bathy"].append(item)
+                MQTT_MESSAGES_TOTAL.inc()
                 async with LOCK:
                     total = sum(len(v) for v in BUFFER.values())
                 if total >= 100:
@@ -164,6 +173,7 @@ async def mqtt_worker():
 
 @app.on_event("startup")
 async def startup_event():
+    start_http_server(8001)
     app.mqtt_task = asyncio.create_task(mqtt_worker())
     app.flush_task = asyncio.create_task(flush_worker())
 

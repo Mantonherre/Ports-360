@@ -118,6 +118,7 @@ services:
       - --providers.file.filename=/etc/traefik/traefik.yml
     ports:
       - "443:443"
+      - "8081:8081"
     volumes:
       - ./infra/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - ./infra/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
@@ -127,6 +128,39 @@ services:
       - twin-core
       - timeseries
       - dashboard
+
+  prometheus:
+    image: prom/prometheus:v2.51
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - context-adapter
+      - timeseries
+      - twin-core
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: smartport
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+  # jaeger:
+  #   image: jaegertracing/all-in-one:1.58
+  #   environment:
+  #     COLLECTOR_OTLP_ENABLED: "true"
+  #   ports:
+  #     - "16686:16686"
+  #   depends_on:
+  #     - context-adapter
+  #     - timeseries
+  #     - twin-core
 
 volumes:
   pgdata:

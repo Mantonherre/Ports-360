@@ -3,7 +3,11 @@ entryPoints:
     address: ":80"
   websecure:
     address: ":443"
+  metrics:
+    address: ":8081"
 
 providers:
   file:
     filename: /etc/traefik/dynamic.yml
+metrics:
+  prometheus: {}

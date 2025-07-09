@@ -5,3 +5,4 @@ asyncio-mqtt
 jsonschema
 PyYAML
 python-jose[cryptography]
+prometheus-client

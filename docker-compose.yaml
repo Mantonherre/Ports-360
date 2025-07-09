@@ -88,6 +88,22 @@ services:
     volumes:
       - wiremock_data:/home/wiremock
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  twin-core:
+    build: ./services/twin_core
+    ports:
+      - "8030:8030"
+    environment:
+      WS_ENDPOINT: ws://context-adapter:8010
+      REDIS_HOST: redis
+    depends_on:
+      - redis
+      - context-adapter
+
 volumes:
   pgdata:
   mosquitto_data:

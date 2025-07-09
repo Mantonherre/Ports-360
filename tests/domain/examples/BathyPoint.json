@@ -1,0 +1,6 @@
+{
+  "id": "bathy:1",
+  "location": {"type": "Point", "coordinates": [0, 0]},
+  "depth_m": 20,
+  "timestamp": "2024-01-01T12:00:00Z"
+}

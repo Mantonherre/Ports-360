@@ -1,0 +1,96 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$defs:
+  Point:
+    type: object
+    properties:
+      type:
+        const: Point
+      coordinates:
+        type: array
+        minItems: 2
+        maxItems: 3
+        items:
+          type: number
+    required: [type, coordinates]
+  Polygon:
+    type: object
+    properties:
+      type:
+        const: Polygon
+      coordinates:
+        type: array
+        items:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+    required: [type, coordinates]
+  PortArea:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      geometry:
+        $ref: '#/$defs/Polygon'
+      status:
+        type: string
+    required: [id, name, geometry, status]
+  Sensor:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      location:
+        $ref: '#/$defs/Point'
+      measuredProperty:
+        type: string
+      unit:
+        type: string
+      lastValue:
+        type: number
+    required: [id, type, location, measuredProperty, unit, lastValue]
+  EnergyAsset:
+    type: object
+    properties:
+      id:
+        type: string
+      kind:
+        type: string
+      capacity_kW:
+        type: number
+      state_of_charge:
+        type: number
+    required: [id, kind, capacity_kW, state_of_charge]
+  Vessel:
+    type: object
+    properties:
+      id:
+        type: string
+      imo:
+        type: string
+      draught:
+        type: number
+      eta:
+        type: string
+        format: date-time
+      berth:
+        type: string
+    required: [id, imo, draught, eta, berth]
+  BathyPoint:
+    type: object
+    properties:
+      id:
+        type: string
+      location:
+        $ref: '#/$defs/Point'
+      depth_m:
+        type: number
+      timestamp:
+        type: string
+        format: date-time
+    required: [id, location, depth_m, timestamp]

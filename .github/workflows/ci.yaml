@@ -34,10 +34,10 @@ jobs:
         run: pytest -q
       # ---- Snyk security scan ----
       - name: Snyk CLI setup
-        uses: snyk/actions/setup@v1
+        uses: snyk/actions/setup@master
 
       - name: Snyk scan (fail on HIGH)
-        uses: snyk/actions/scan@v1
+        uses: snyk/actions/scan@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:

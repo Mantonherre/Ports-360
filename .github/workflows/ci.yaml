@@ -33,15 +33,15 @@ jobs:
       - name: Run tests
         run: pytest -q
       - name: Snyk CLI setup
-        uses: snyk/actions/setup@v2
+        uses: snyk/actions/setup@v1
 
       - name: Snyk scan (fail on HIGH)
-        uses: snyk/actions/scan@v2
+        uses: snyk/actions/scan@v1
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          sarif: true
-          fail-on: high
+          severity-threshold: high
+          json: true
       - name: Build and run compose
         run: |
           docker compose up -d --build
@@ -67,9 +67,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Download promtool
         run: |
-          PROM_VER=$(curl -s https://api.github.com/repos/prometheus/prometheus/releases/latest | grep '"tag_name":' | cut -d" -f4)
-          curl -sL https://github.com/prometheus/prometheus/releases/download/${PROM_VER}/prometheus-${PROM_VER:1}.linux-amd64.tar.gz | tar xz
-          sudo mv prometheus-*/promtool /usr/local/bin/promtool
+          set -eux
+          PROM_VERSION="2.52.0"
+          curl -sL https://github.com/prometheus/prometheus/releases/download/v${PROM_VERSION}/prometheus-${PROM_VERSION}.linux-amd64.tar.gz \
+            | tar -xz --strip-components=1 prometheus-${PROM_VERSION}.linux-amd64/promtool
+          sudo mv promtool /usr/local/bin/
           promtool --version
       - name: Prometheus lint
         run: promtool check config infra/prometheus/prometheus.yml

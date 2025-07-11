@@ -47,16 +47,17 @@ jobs:
       - name: Run tests
         run: pytest -q
       # ---- Snyk security scan ----
+      - name: Set up Snyk
+        uses: snyk/actions/setup@master
       - name: Snyk scan (fail on HIGH)
-        uses: snyk/actions/python@master
+        run: |
+          snyk test \
+            --severity-threshold=high \
+            --sarif-file-output=snyk.sarif \
+            --file=requirements-dev.txt \
+            --package-manager=pip
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: >-
-            --severity-threshold=high
-            --sarif-file-output=snyk.sarif
-            --file=requirements-dev.txt
-            --package-manager=pip
 
       - name: Upload Snyk results
         uses: github/codeql-action/upload-sarif@v2

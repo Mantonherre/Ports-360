@@ -7,7 +7,7 @@ microservices and a React front-end with Docker based development and CI.
 
 ```bash
 git clone <repo-url>
-cd smartport
+cd Ports-360
 # or if already inside
 cp infra/.env.example infra/.env
 docker compose up --build

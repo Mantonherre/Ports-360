@@ -34,6 +34,7 @@ async def test_ingest(mqtt_broker):
 
     from services.context_adapter.app.main import app
     from libs.auth_middleware import auth_dependency
+
     app.dependency_overrides[auth_dependency] = lambda: {}
 
     sample = {

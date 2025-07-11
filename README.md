@@ -56,3 +56,36 @@ Para generar datos de prueba puedes ejecutar el simulador:
 ```bash
 python tools/sensor_sim/sensor_sim.py --config tools/sensor_sim/config.yaml --mqtt-host localhost --rate 1
 ```
+
+El simulador requiere que haya un broker MQTT en ejecución. Si no está disponible
+recibirás errores de "Connection refused".
+
+## Otros servicios
+
+Cada microservicio incluye instrucciones en su propio directorio, aunque a
+continuación se resumen los comandos más habituales:
+
+### Context Adapter
+
+```bash
+cd services/context_adapter
+docker build -t context-adapter .
+docker run -e MQTT_HOST=mqtt -p 8010:8010 context-adapter
+```
+
+### Twin Core
+
+```bash
+cd services/twin_core
+npm install
+npm run build
+npm start
+```
+
+### Dashboard web
+
+```bash
+cd ui/dashboard
+npm install
+npm run dev
+```

@@ -14,9 +14,16 @@ from libs.auth_middleware import get_password_token
 
 
 def _docker_available() -> bool:
+    """Return True if both docker and docker-compose are available."""
     try:
         subprocess.run(
             ["docker", "info"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
+        )
+        subprocess.run(
+            ["docker-compose", "--version"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             check=True,

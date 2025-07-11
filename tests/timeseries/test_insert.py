@@ -3,6 +3,7 @@ import json
 import os
 import subprocess
 import time
+import shutil
 
 import pytest
 
@@ -12,9 +13,16 @@ from asyncio_mqtt import Client
 
 
 def _docker_available() -> bool:
+    """Return True if docker and docker-compose are available."""
     try:
         subprocess.run(
             ["docker", "info"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
+        )
+        subprocess.run(
+            ["docker-compose", "--version"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             check=True,

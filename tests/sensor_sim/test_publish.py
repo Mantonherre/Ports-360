@@ -4,11 +4,15 @@ import os
 import subprocess
 import time
 from pathlib import Path
+import shutil
 
 import pytest
 from asyncio_mqtt import Client
 from jsonschema import validate
 import yaml
+
+if shutil.which("mosquitto") is None:
+    pytest.skip("mosquitto not available", allow_module_level=True)
 
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "docs" / "domain" / "ngsi-ld.yaml"
 with SCHEMA_PATH.open() as f:

@@ -29,12 +29,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           visibility: public
+      - name: Set lower-case repository name
+        run: echo "REPOSITORY=${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
       - uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.context }}:${{ github.sha }},
-                ghcr.io/${{ github.repository }}/${{ matrix.context }}:latest
+          tags: ghcr.io/${{ env.REPOSITORY }}/${{ matrix.context }}:${{ github.sha }},
+                ghcr.io/${{ env.REPOSITORY }}/${{ matrix.context }}:latest
   deploy:
     needs: build
     runs-on: ubuntu-latest

@@ -12,6 +12,15 @@ jobs:
         image: docker:24-dind
         options: >-
           --privileged
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: smartport
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -29,6 +38,11 @@ jobs:
       - name: Ruff lint
         run: ruff check .
       - name: Run migrations
+        env:
+          PGUSER: postgres
+          PGPASSWORD: smartport
+          PGDATABASE: postgres
+          PGHOST: localhost
         run: alembic -c services/timeseries/alembic.ini upgrade head
       - name: Run tests
         run: pytest -q

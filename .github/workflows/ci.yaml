@@ -56,6 +56,7 @@ jobs:
             --severity-threshold=high
             --sarif-file-output=snyk.sarif
             --file=requirements-dev.txt
+            --package-manager=pip
 
       - name: Upload Snyk results
         uses: github/codeql-action/upload-sarif@v2

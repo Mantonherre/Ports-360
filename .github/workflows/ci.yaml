@@ -13,7 +13,7 @@ jobs:
         options: >-
           --privileged
       postgres:
-        image: postgres:16
+        image: timescale/timescaledb-ha:pg16
         env:
           POSTGRES_PASSWORD: smartport
           POSTGRES_DB: postgres

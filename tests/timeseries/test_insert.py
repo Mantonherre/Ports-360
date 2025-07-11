@@ -4,10 +4,28 @@ import os
 import subprocess
 import time
 
-import asyncpg
 import pytest
+
+import asyncpg
 from asgi_lifespan import LifespanManager
 from asyncio_mqtt import Client
+
+
+def _docker_available() -> bool:
+    try:
+        subprocess.run(
+            ["docker", "info"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
+        )
+        return True
+    except Exception:
+        return False
+
+
+if not _docker_available():
+    pytest.skip("docker not available", allow_module_level=True)
 
 
 @pytest.fixture(scope="module")

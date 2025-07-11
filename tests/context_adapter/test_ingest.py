@@ -3,11 +3,15 @@ import json
 import os
 import subprocess
 import time
+import shutil
 
 import pytest
 import httpx
 from asgi_lifespan import LifespanManager
 from asyncio_mqtt import Client
+
+if shutil.which("mosquitto") is None:
+    pytest.skip("mosquitto not available", allow_module_level=True)
 
 
 @pytest.fixture(autouse=True)

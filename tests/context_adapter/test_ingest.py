@@ -10,6 +10,14 @@ from asgi_lifespan import LifespanManager
 from asyncio_mqtt import Client
 
 
+@pytest.fixture(autouse=True)
+def disable_auth(monkeypatch):
+    async def _fake(*args, **kwargs):
+        return {}
+
+    monkeypatch.setattr("libs.auth_middleware.auth_dependency", _fake)
+
+
 @pytest.fixture(scope="module")
 def mqtt_broker():
     proc = subprocess.Popen(["mosquitto", "-p", "1883"])
@@ -25,6 +33,8 @@ async def test_ingest(mqtt_broker):
     os.environ["MQTT_PORT"] = "1883"
 
     from services.context_adapter.app.main import app
+    from libs.auth_middleware import auth_dependency
+    app.dependency_overrides[auth_dependency] = lambda: {}
 
     sample = {
         "id": "sensor:1",

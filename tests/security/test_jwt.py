@@ -13,6 +13,23 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from libs.auth_middleware import get_password_token
 
 
+def _docker_available() -> bool:
+    try:
+        subprocess.run(
+            ["docker", "info"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
+        )
+        return True
+    except Exception:
+        return False
+
+
+if not _docker_available():
+    pytest.skip("docker not available", allow_module_level=True)
+
+
 @pytest.fixture(scope="module")
 def keycloak_container():
     subprocess.run(["docker-compose", "up", "-d", "keycloak"], check=True)

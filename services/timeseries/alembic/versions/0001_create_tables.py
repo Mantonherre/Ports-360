@@ -11,6 +11,7 @@ depends_on = None
 
 
 def upgrade() -> None:
+    op.execute("CREATE EXTENSION IF NOT EXISTS postgis")
     op.create_table(
         "sensor_snapshot",
         sa.Column("id", sa.Text, nullable=False),

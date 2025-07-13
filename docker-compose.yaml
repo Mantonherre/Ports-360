@@ -5,7 +5,7 @@ services:
     build: ./services/template_service
     container_name: template_service
     ports:
-      - "8000:8000"
+      - "18000:8000"
     environment:
       - PYTHONUNBUFFERED=1
     volumes:
@@ -19,7 +19,7 @@ services:
       - "8010:8010"
     environment:
       - MQTT_HOST=mqtt
-      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_URL=http://keycloak:18080
       - KEYCLOAK_REALM=smartport
       - CONTEXT_ADAPTER_SECRET=${CONTEXT_ADAPTER_SECRET}
     depends_on:
@@ -70,7 +70,7 @@ services:
       - PGDATABASE=postgres
       - MQTT_HOST=mqtt
       - MQTT_PORT=1883
-      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_URL=http://keycloak:18080
       - KEYCLOAK_REALM=smartport
       - TIMESERIES_SECRET=${TIMESERIES_SECRET}
     ports:
@@ -82,7 +82,7 @@ services:
       - ${PWD}/infra/.env
     command: start-dev
     ports:
-      - "8080:8080"
+      - "18080:8080"
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
@@ -116,7 +116,7 @@ services:
     environment:
       - WS_ENDPOINT=ws://context-adapter:8010
       - REDIS_HOST=redis
-      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_URL=http://keycloak:18080
       - KEYCLOAK_REALM=smartport
       - TWIN_CORE_SECRET=${TWIN_CORE_SECRET}
     depends_on:
@@ -130,7 +130,7 @@ services:
     command:
       - --providers.file.filename=/etc/traefik/traefik.yml
     ports:
-      - "443:443"
+      - "8443:443"
       - "8081:8081"
     volumes:
       - ./infra/traefik/traefik.yml:/etc/traefik/traefik.yml:ro

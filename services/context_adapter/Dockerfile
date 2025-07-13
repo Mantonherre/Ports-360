@@ -9,6 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt \
 # Copy service code and shared libraries
 COPY services/context_adapter/ .
 COPY libs ./libs
+COPY docs ./docs
 
 # Launch the service with the configured number of workers. Using ``sh -c``
 # allows the ``WORKERS`` environment variable to be expanded correctly.

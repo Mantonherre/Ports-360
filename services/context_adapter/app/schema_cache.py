@@ -2,7 +2,15 @@ from functools import lru_cache
 from pathlib import Path
 import yaml
 
-SCHEMA_PATH = Path(__file__).resolve().parents[3] / "docs" / "domain" / "ngsi-ld.yaml"
+# Locate the NGSI-LD schema file by walking up parent directories
+_file = Path(__file__).resolve()
+for parent in [_file.parent, *_file.parents]:
+    candidate = parent / "docs" / "domain" / "ngsi-ld.yaml"
+    if candidate.exists():
+        SCHEMA_PATH = candidate
+        break
+else:  # pragma: no cover - executed only if file is missing
+    raise FileNotFoundError("ngsi-ld.yaml not found")
 
 
 @lru_cache

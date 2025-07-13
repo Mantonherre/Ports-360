@@ -6,3 +6,4 @@ jsonschema
 PyYAML
 python-jose[cryptography]
 prometheus-client
+httpx

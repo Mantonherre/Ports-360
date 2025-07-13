@@ -21,7 +21,9 @@ export const typeDefs = gql`
   union EntityUpdate = Sensor | EnergyAsset | BathyPoint
 `;
 
-export function resolvers(redis: RedisClientType) {
+export function resolvers(
+  redis: RedisClientType<any, any, any>
+) {
   return {
     Query: {
       portAreas: async () => [],

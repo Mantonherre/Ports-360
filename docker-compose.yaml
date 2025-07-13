@@ -22,6 +22,7 @@ services:
       - KEYCLOAK_URL=http://keycloak:18080
       - KEYCLOAK_REALM=smartport
       - CONTEXT_ADAPTER_SECRET=${CONTEXT_ADAPTER_SECRET}
+      - WORKERS=1
     depends_on:
       - mosquitto
 

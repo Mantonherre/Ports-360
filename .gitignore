@@ -15,8 +15,8 @@ dist/
 *.pid
 
 .env
+!infra/.env
 
 # Misc
 .idea/
 .vscode/
-infra/.env

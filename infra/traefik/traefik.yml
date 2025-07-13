@@ -2,8 +2,6 @@ entryPoints:
   web:
     address: ":80"
   websecure:
-    address: ":8443"
-  metrics:
     address: ":8081"
 
 providers:
@@ -11,11 +9,3 @@ providers:
     filename: /etc/traefik/dynamic.yml
 metrics:
   prometheus: {}
-
-certificatesResolvers:
-  letsencrypt:
-    acme:
-      email: admin@optimainterface.com
-      storage: /certs/acme.json
-      httpChallenge:
-        entryPoint: web

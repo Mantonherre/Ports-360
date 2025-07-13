@@ -37,7 +37,7 @@ services:
     env_file:
       - ${PWD}/infra/.env
     ports:
-      - "5432:5432"
+      - "15432:5432"
     environment:
       - POSTGRES_USER=smartport
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -96,7 +96,7 @@ services:
     env_file:
       - ${PWD}/infra/.env
     ports:
-      - "9090:8080"
+      - "9080:8080"
     volumes:
       - wiremock_data:/home/wiremock
 
@@ -149,7 +149,7 @@ services:
     volumes:
       - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - "9090:9090"
+      - "19090:9090"
     depends_on:
       - context-adapter
       - timeseries

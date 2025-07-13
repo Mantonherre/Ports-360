@@ -13,6 +13,10 @@ cp infra/.env.example infra/.env
 docker compose up --build
 ```
 
+`infra/.env` contains the credentials used by the containers. Copying the
+example file is required before starting the stack, otherwise many services will
+fail to boot.
+
 The sample FastAPI service is available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 Add `smartport.local` to `/etc/hosts` pointing to `127.0.0.1` to access the stack through Traefik using HTTPS.

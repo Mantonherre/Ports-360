@@ -135,12 +135,11 @@ services:
     command:
       - --providers.file.filename=/etc/traefik/traefik.yml
     ports:
-      - "80:80"
-      - "8443:443"
+      - "8090:80"
+      - "8091:8081"
     volumes:
       - ./infra/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - ./infra/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
-      - ./infra/traefik/certs:/certs
     depends_on:
       - context-adapter
       - twin-core

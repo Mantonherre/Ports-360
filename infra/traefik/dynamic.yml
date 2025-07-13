@@ -3,31 +3,23 @@ http:
     api:
       rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/api`)"
       service: context-adapter
-      entryPoints:
-        - websecure
-      tls:
-        certResolver: letsencrypt
+      entryPoints: [web]
+
     gql:
       rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/gql`)"
       service: twin-core
-      entryPoints:
-        - websecure
-      tls:
-        certResolver: letsencrypt
+      entryPoints: [web]
+
     db:
       rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/db`)"
       service: timeseries
-      entryPoints:
-        - websecure
-      tls:
-        certResolver: letsencrypt
+      entryPoints: [web]
+
     dashboard:
       rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/`)"
       service: dashboard
-      entryPoints:
-        - websecure
-      tls:
-        certResolver: letsencrypt
+      entryPoints: [web]
+
   services:
     context-adapter:
       loadBalancer:

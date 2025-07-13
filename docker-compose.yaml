@@ -13,12 +13,15 @@ services:
 
   context-adapter:
     build: ./services/context_adapter
+    env_file:
+      - ${PWD}/infra/.env
     ports:
       - "8010:8010"
     environment:
-      MQTT_HOST: mqtt
-      KEYCLOAK_URL: http://keycloak:8080
-      KEYCLOAK_REALM: smartport
+      - MQTT_HOST=mqtt
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=smartport
+      - CONTEXT_ADAPTER_SECRET=${CONTEXT_ADAPTER_SECRET}
     depends_on:
       - mosquitto
 
@@ -31,6 +34,8 @@ services:
 
   postgres:
     image: timescale/timescaledb-ha:pg16
+    env_file:
+      - ${PWD}/infra/.env
     ports:
       - "5432:5432"
     environment:
@@ -43,6 +48,8 @@ services:
   mosquitto:
     image: eclipse-mosquitto:2
     container_name: mqtt
+    env_file:
+      - ${PWD}/infra/.env
     ports:
       - "1883:1883"
     volumes:
@@ -51,31 +58,28 @@ services:
 
   timeseries:
     build: ./services/timeseries
+    env_file:
+      - ${PWD}/infra/.env
     depends_on:
       - postgres
       - mosquitto
     environment:
-      PGHOST: postgres
-      PGUSER: postgres
-      PGPASSWORD: ${POSTGRES_PASSWORD}
-      PGDATABASE: postgres
-      MQTT_HOST: mqtt
-      MQTT_PORT: 1883
-      KEYCLOAK_URL: http://keycloak:8080
-      KEYCLOAK_REALM: smartport
+      - PGHOST=postgres
+      - PGUSER=postgres
+      - PGPASSWORD=${POSTGRES_PASSWORD}
+      - PGDATABASE=postgres
+      - MQTT_HOST=mqtt
+      - MQTT_PORT=1883
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=smartport
+      - TIMESERIES_SECRET=${TIMESERIES_SECRET}
     ports:
       - "8020:8020"
 
-  # sensor-sim:
-  #   build: ./tools/sensor_sim
-  #   environment:
-  #     MQTT_HOST: mqtt
-  #     MQTT_PORT: 1883
-  #   depends_on:
-  #     - mosquitto
-
   keycloak:
-    image: quay.io/keycloak/keycloak:24
+    image: quay.io/keycloak/keycloak:24.0.1
+    env_file:
+      - ${PWD}/infra/.env
     command: start-dev
     ports:
       - "8080:8080"
@@ -88,7 +92,9 @@ services:
       - ./infra/keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
 
   wiremock:
-    image: wiremock/wiremock:3
+    image: wiremock/wiremock:3.3.1
+    env_file:
+      - ${PWD}/infra/.env
     ports:
       - "9090:8080"
     volumes:
@@ -96,24 +102,31 @@ services:
 
   redis:
     image: redis:7-alpine
+    env_file:
+      - ${PWD}/infra/.env
     ports:
       - "6379:6379"
 
   twin-core:
     build: ./services/twin_core
+    env_file:
+      - ${PWD}/infra/.env
     ports:
       - "8030:8030"
     environment:
-      WS_ENDPOINT: ws://context-adapter:8010
-      REDIS_HOST: redis
-      KEYCLOAK_URL: http://keycloak:8080
-      KEYCLOAK_REALM: smartport
+      - WS_ENDPOINT=ws://context-adapter:8010
+      - REDIS_HOST=redis
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=smartport
+      - TWIN_CORE_SECRET=${TWIN_CORE_SECRET}
     depends_on:
       - redis
       - context-adapter
 
   traefik:
     image: traefik:v2.11
+    env_file:
+      - ${PWD}/infra/.env
     command:
       - --providers.file.filename=/etc/traefik/traefik.yml
     ports:
@@ -130,7 +143,9 @@ services:
       - dashboard
 
   prometheus:
-    image: prom/prometheus:v2.51
+    image: prom/prometheus:v2.49.1
+    env_file:
+      - ${PWD}/infra/.env
     volumes:
       - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -142,25 +157,16 @@ services:
 
   grafana:
     image: grafana/grafana:11.0.0
+    env_file:
+      - ${PWD}/infra/.env
     ports:
       - "3000:3000"
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: smartport
+      - GF_SECURITY_ADMIN_PASSWORD=smartport
     volumes:
       - ./infra/grafana/provisioning:/etc/grafana/provisioning
     depends_on:
       - prometheus
-
-  # jaeger:
-  #   image: jaegertracing/all-in-one:1.58
-  #   environment:
-  #     COLLECTOR_OTLP_ENABLED: "true"
-  #   ports:
-  #     - "16686:16686"
-  #   depends_on:
-  #     - context-adapter
-  #     - timeseries
-  #     - twin-core
 
 volumes:
   pgdata:

@@ -12,7 +12,9 @@ services:
       - ./services/template_service:/app
 
   context-adapter:
-    build: ./services/context_adapter
+    build:
+      context: .
+      dockerfile: services/context_adapter/Dockerfile
     env_file:
       - ${PWD}/infra/.env
     ports:
@@ -58,7 +60,9 @@ services:
       - mosquitto_log:/mosquitto/log
 
   timeseries:
-    build: ./services/timeseries
+    build:
+      context: .
+      dockerfile: services/timeseries/Dockerfile
     env_file:
       - ${PWD}/infra/.env
     depends_on:

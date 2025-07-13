@@ -5,25 +5,29 @@ http:
       service: context-adapter
       entryPoints:
         - websecure
-      tls: {}
+      tls:
+        certResolver: letsencrypt
     gql:
       rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/gql`)"
       service: twin-core
       entryPoints:
         - websecure
-      tls: {}
+      tls:
+        certResolver: letsencrypt
     db:
       rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/db`)"
       service: timeseries
       entryPoints:
         - websecure
-      tls: {}
+      tls:
+        certResolver: letsencrypt
     dashboard:
       rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/`)"
       service: dashboard
       entryPoints:
         - websecure
-      tls: {}
+      tls:
+        certResolver: letsencrypt
   services:
     context-adapter:
       loadBalancer:
@@ -41,7 +45,3 @@ http:
       loadBalancer:
         servers:
           - url: http://dashboard:80
-tls:
-  certificates:
-    - certFile: /certs/local.crt
-      keyFile: /certs/local.key

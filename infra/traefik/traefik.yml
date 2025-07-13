@@ -11,3 +11,11 @@ providers:
     filename: /etc/traefik/dynamic.yml
 metrics:
   prometheus: {}
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: admin@optimainterface.com
+      storage: /certs/acme.json
+      httpChallenge:
+        entryPoint: web

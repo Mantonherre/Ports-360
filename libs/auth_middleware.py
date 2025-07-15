@@ -6,7 +6,9 @@ import httpx
 from fastapi import Header, HTTPException
 from jose import jwt
 
-KEYCLOAK_URL = os.getenv("KEYCLOAK_URL", "http://keycloak:8080")
+# Default Keycloak URL used by local development and tests. The port was
+# changed from 8080 to 8181 to avoid conflicts with other services.
+KEYCLOAK_URL = os.getenv("KEYCLOAK_URL", "http://keycloak:8181")
 REALM = os.getenv("KEYCLOAK_REALM", "smartport")
 JWKS_URL = f"{KEYCLOAK_URL}/realms/{REALM}/protocol/openid-connect/certs"
 ISSUER = f"{KEYCLOAK_URL}/realms/{REALM}"

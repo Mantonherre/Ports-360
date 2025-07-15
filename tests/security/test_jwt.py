@@ -48,7 +48,7 @@ def keycloak_container():
 
 @pytest.mark.asyncio
 async def test_jwt_required(keycloak_container):
-    os.environ["KEYCLOAK_URL"] = "http://localhost:8080"
+    os.environ["KEYCLOAK_URL"] = "http://localhost:8181"
     os.environ["KEYCLOAK_REALM"] = "smartport"
     token = get_password_token("dashboard", "admin", "admin")
     from services.context_adapter.app.main import app

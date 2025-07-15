@@ -135,8 +135,8 @@ services:
     command:
       - --providers.file.filename=/etc/traefik/traefik.yml
     ports:
-      - "8090:80"
-      - "8091:8081"
+      - "8181:80"
+      - "8182:8081"
     volumes:
       - ./infra/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - ./infra/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
@@ -167,6 +167,9 @@ services:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=smartport
+      - GF_SERVER_DOMAIN=ports360.online
+      - GF_SERVER_ROOT_URL=https://ports360.online/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
     volumes:
       - ./infra/grafana/provisioning:/etc/grafana/provisioning
     depends_on:
@@ -178,3 +181,4 @@ volumes:
   mosquitto_log:
   keycloak_data:
   wiremock_data:
+

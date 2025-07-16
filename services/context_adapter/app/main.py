@@ -29,9 +29,7 @@ app = FastAPI(title="Context Adapter")
 INGEST_REQUESTS_TOTAL = Counter("ingest_requests_total", "Total ingest requests")
 MQTT_MESSAGES_TOTAL = Counter("mqtt_messages_total", "MQTT messages published")
 
-mqtt_client = Client(
-    MQTT_HOST, MQTT_PORT, username=MQTT_USERNAME or None, password=MQTT_PASSWORD or None
-)
+mqtt_client: Client | None = None
 cache: dict[str, dict] = {}
 
 ws_clients: set[WebSocket] = set()
@@ -56,6 +54,13 @@ async def mqtt_worker() -> None:
 @app.on_event("startup")
 async def startup():
     start_http_server(8001)
+    global mqtt_client
+    mqtt_client = Client(
+        MQTT_HOST,
+        MQTT_PORT,
+        username=MQTT_USERNAME or None,
+        password=MQTT_PASSWORD or None,
+    )
     while True:
         try:
             await mqtt_client.connect()
@@ -76,7 +81,8 @@ async def metrics() -> Response:
 async def shutdown():
     app.mqtt_task.cancel()
     await asyncio.gather(app.mqtt_task, return_exceptions=True)
-    await mqtt_client.disconnect()
+    if mqtt_client is not None:
+        await mqtt_client.disconnect()
 
 
 def detect_type(entity: dict) -> str:

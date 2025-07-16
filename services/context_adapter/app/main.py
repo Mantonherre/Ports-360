@@ -12,7 +12,7 @@ from prometheus_client import (
 from fastapi.responses import Response
 
 from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect
-from asyncio_mqtt import Client
+from asyncio_mqtt import Client, MqttError
 import asyncio
 from jsonschema import validate, ValidationError
 
@@ -56,7 +56,13 @@ async def mqtt_worker() -> None:
 @app.on_event("startup")
 async def startup():
     start_http_server(8001)
-    await mqtt_client.connect()
+    while True:
+        try:
+            await mqtt_client.connect()
+            break
+        except MqttError as exc:
+            print(f"MQTT connection failed: {exc}. Retrying in 5s")
+            await asyncio.sleep(5)
     app.mqtt_task = asyncio.create_task(mqtt_worker())
 
 

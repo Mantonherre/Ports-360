@@ -7,3 +7,4 @@ PyYAML
 python-jose[cryptography]
 prometheus-client
 httpx
+paho-mqtt<2

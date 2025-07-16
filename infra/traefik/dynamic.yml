@@ -1,22 +1,22 @@
 http:
   routers:
     api:
-      rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/api`)"
+      rule: "Host(`ports360.online`) && PathPrefix(`/api`)"
       service: context-adapter
       entryPoints: [web]
 
     gql:
-      rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/gql`)"
+      rule: "Host(`ports360.online`) && PathPrefix(`/gql`)"
       service: twin-core
       entryPoints: [web]
 
     db:
-      rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/db`)"
+      rule: "Host(`ports360.online`) && PathPrefix(`/db`)"
       service: timeseries
       entryPoints: [web]
 
     dashboard:
-      rule: "Host(`ports360.optimainterface.com`) && PathPrefix(`/`)"
+      rule: "Host(`ports360.online`) && PathPrefix(`/`)"
       service: dashboard
       entryPoints: [web]
 

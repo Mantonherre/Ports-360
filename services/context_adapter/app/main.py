@@ -2,7 +2,14 @@ import json
 import os
 from typing import List
 
-from prometheus_client import Counter, start_http_server
+from prometheus_client import (
+    Counter,
+    start_http_server,
+    generate_latest,
+    CONTENT_TYPE_LATEST,
+)
+
+from fastapi.responses import Response
 
 from fastapi import FastAPI, HTTPException, Depends
 from asyncio_mqtt import Client
@@ -31,6 +38,12 @@ cache: dict[str, dict] = {}
 async def startup():
     start_http_server(8001)
     await mqtt_client.connect()
+
+
+@app.get("/metrics")
+async def metrics() -> Response:
+    """Return Prometheus metrics."""
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 @app.on_event("shutdown")

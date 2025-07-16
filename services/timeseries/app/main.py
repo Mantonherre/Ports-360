@@ -4,7 +4,14 @@ import os
 from datetime import datetime
 from time import perf_counter
 
-from prometheus_client import Counter, Histogram, start_http_server
+from prometheus_client import (
+    Counter,
+    Histogram,
+    start_http_server,
+    generate_latest,
+    CONTENT_TYPE_LATEST,
+)
+from fastapi.responses import Response
 
 from asyncio_mqtt import Client
 from fastapi import FastAPI, Depends
@@ -40,6 +47,12 @@ def health() -> dict:
 @app.get("/health")
 async def health_endpoint(_=Depends(auth_dependency)):
     return health()
+
+
+@app.get("/metrics")
+async def metrics() -> Response:
+    """Return Prometheus metrics."""
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 BUFFER = {"sensor": [], "energy": [], "bathy": []}

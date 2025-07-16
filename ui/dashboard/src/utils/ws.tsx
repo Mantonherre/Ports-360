@@ -31,7 +31,10 @@ export const useStore = create<State>(() => ({
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    const socket = io('ws://context-adapter:8010/ws')
+    const proto = window.location.protocol === 'https:' ? 'wss' : 'ws'
+    const host = window.location.host
+    const base = import.meta.env.VITE_WS_ENDPOINT || `${proto}://${host}`
+    const socket = io(`${base}/ws`)
     socket.on('entity_update', (data: any) => {
       if (data.type === 'BathyPoint') {
         useStore.setState(state => ({ bathyPoints: [...state.bathyPoints, data] }))

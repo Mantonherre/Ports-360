@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { io } from 'socket.io-client'
 import { useEffect } from 'react'
 
 interface BathyPoint {
@@ -34,8 +33,10 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     const proto = window.location.protocol === 'https:' ? 'wss' : 'ws'
     const host = window.location.host
     const base = import.meta.env.VITE_WS_ENDPOINT || `${proto}://${host}`
-    const socket = io(`${base}/ws`)
-    socket.on('entity_update', (data: any) => {
+    const socket = new WebSocket(`${base}/ws`)
+
+    socket.addEventListener('message', event => {
+      const data = JSON.parse(event.data)
       if (data.type === 'BathyPoint') {
         useStore.setState(state => ({ bathyPoints: [...state.bathyPoints, data] }))
       } else if (data.type === 'SensorReading') {
@@ -47,6 +48,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         useStore.setState({ stateOfCharge: data.state_of_charge })
       }
     })
+
     return () => {
       socket.close()
     }

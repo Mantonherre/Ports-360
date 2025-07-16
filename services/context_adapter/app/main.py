@@ -11,8 +11,9 @@ from prometheus_client import (
 
 from fastapi.responses import Response
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect
 from asyncio_mqtt import Client
+import asyncio
 from jsonschema import validate, ValidationError
 
 from .schema_cache import get_schema
@@ -33,11 +34,30 @@ mqtt_client = Client(
 )
 cache: dict[str, dict] = {}
 
+ws_clients: set[WebSocket] = set()
+
+
+async def broadcast(message: str) -> None:
+    """Send a message to all connected WebSocket clients."""
+    for ws in list(ws_clients):
+        try:
+            await ws.send_text(message)
+        except Exception:
+            ws_clients.discard(ws)
+
+
+async def mqtt_worker() -> None:
+    async with mqtt_client.filtered_messages("smartport/#") as messages:
+        await mqtt_client.subscribe("smartport/#")
+        async for msg in messages:
+            await broadcast(msg.payload.decode())
+
 
 @app.on_event("startup")
 async def startup():
     start_http_server(8001)
     await mqtt_client.connect()
+    app.mqtt_task = asyncio.create_task(mqtt_worker())
 
 
 @app.get("/metrics")
@@ -48,6 +68,8 @@ async def metrics() -> Response:
 
 @app.on_event("shutdown")
 async def shutdown():
+    app.mqtt_task.cancel()
+    await asyncio.gather(app.mqtt_task, return_exceptions=True)
     await mqtt_client.disconnect()
 
 
@@ -88,6 +110,17 @@ async def get_entity(type: str, id: str, _=Depends(auth_dependency)):
     if not entity:
         raise HTTPException(status_code=404)
     return entity
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    ws_clients.add(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        ws_clients.discard(websocket)
 
 
 @app.patch("/entities/{type}/{id}", status_code=202)

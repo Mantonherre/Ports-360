@@ -15,6 +15,11 @@ http:
       service: timeseries
       entryPoints: [web]
 
+    ws:
+      rule: "Host(`ports360.online`) && PathPrefix(`/ws`)"
+      service: context-adapter
+      entryPoints: [web]
+
     dashboard:
       rule: "Host(`ports360.online`) && PathPrefix(`/`)"
       service: dashboard

@@ -21,6 +21,14 @@ The sample FastAPI service is available at [http://localhost:8000/docs](http://l
 
 Add `smartport.local` to `/etc/hosts` pointing to `127.0.0.1` to access the stack through Traefik using HTTPS.
 
+Traefik exposes the internal services under distinct path prefixes:
+
+- `/api/*` forwards to the Context Adapter
+- `/db/*` forwards to the Timeseries Writer
+- `/gql/*` forwards to the Twin Core
+
+These prefixes are stripped, so the backends keep their original routes such as `/health` or `/metrics`.
+
 All passwords are defined in `infra/.env`. Duplicate `infra/.env.example` and adjust values before running the stack.
 
 

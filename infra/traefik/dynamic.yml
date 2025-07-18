@@ -4,16 +4,19 @@ http:
       rule: "Host(`ports360.online`) && PathPrefix(`/api`)"
       service: context-adapter
       entryPoints: [web]
+      middlewares: [strip-api]
 
     gql:
       rule: "Host(`ports360.online`) && PathPrefix(`/gql`)"
       service: twin-core
       entryPoints: [web]
+      middlewares: [strip-gql]
 
     db:
       rule: "Host(`ports360.online`) && PathPrefix(`/db`)"
       service: timeseries
       entryPoints: [web]
+      middlewares: [strip-db]
 
     ws:
       rule: "Host(`ports360.online`) && PathPrefix(`/ws`)"
@@ -42,3 +45,17 @@ http:
       loadBalancer:
         servers:
           - url: http://dashboard:80
+
+  middlewares:
+    strip-api:
+      stripPrefix:
+        prefixes:
+          - /api
+    strip-gql:
+      stripPrefix:
+        prefixes:
+          - /gql
+    strip-db:
+      stripPrefix:
+        prefixes:
+          - /db

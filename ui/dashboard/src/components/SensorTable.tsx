@@ -1,4 +1,4 @@
-import { useStore } from '../utils/ws'
+import { useStore } from '../utils/mock'
 
 export default function SensorTable() {
   const sensors = useStore(s => s.sensorReadings)

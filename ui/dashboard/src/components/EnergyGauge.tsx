@@ -1,5 +1,5 @@
 import { RadialBarChart, RadialBar } from 'recharts'
-import { useStore } from '../utils/ws'
+import { useStore } from '../utils/mock'
 
 export default function EnergyGauge() {
   const soc = useStore(s => s.stateOfCharge)

@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import MapView from '../MapView'
-import { WebSocketProvider } from '../../utils/ws'
+import { FakeDataProvider } from '../../utils/mock'
 
 describe('MapView', () => {
   it('renders without crashing', () => {
     render(
-      <WebSocketProvider>
+      <FakeDataProvider>
         <div style={{ height: 400 }}>
           <MapView />
         </div>
-      </WebSocketProvider>,
+      </FakeDataProvider>,
     )
     expect(true).toBe(true)
   })

@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import SensorTable from '../SensorTable'
-import { WebSocketProvider } from '../../utils/ws'
+import { FakeDataProvider } from '../../utils/mock'
 
 describe('SensorTable', () => {
   it('renders table', () => {
     const { getByText } = render(
-      <WebSocketProvider>
+      <FakeDataProvider>
         <SensorTable />
-      </WebSocketProvider>,
+      </FakeDataProvider>,
     )
     expect(getByText('Latest Sensors')).toBeTruthy()
   })

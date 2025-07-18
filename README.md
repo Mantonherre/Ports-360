@@ -96,6 +96,14 @@ npm run build
 npm start
 ```
 
+### Timeseries Writer
+
+```bash
+cd services/timeseries
+docker build -t timeseries-writer .
+docker run -e PGHOST=postgres -e MQTT_HOST=mqtt -p 8020:8020 timeseries-writer
+```
+
 ### Ejemplo de consulta GraphQL
 
 El servicio Twin Core protege su API frente a ataques CSRF, por lo que las
@@ -119,3 +127,12 @@ cd ui/dashboard
 npm install
 npm run dev
 ```
+
+## Documentación adicional
+
+El directorio `docs/` contiene información detallada sobre la arquitectura y la operación del proyecto:
+
+- `docs/architecture/` incluye diagramas *Mermaid* de cada servicio.
+- `docs/observability.md` explica la exposición de métricas en Prometheus y Grafana.
+- `docs/security.md` describe el flujo de autenticación con Keycloak.
+- `docs/performance.md` resume las pruebas de rendimiento y sus KPIs.

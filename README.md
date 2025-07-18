@@ -26,6 +26,8 @@ Traefik exposes the internal services under distinct path prefixes:
 - `/api/*` forwards to the Context Adapter
 - `/db/*` forwards to the Timeseries Writer
 - `/gql/*` forwards to the Twin Core
+- `/ws` forwards to the Context Adapter WebSocket endpoint and is
+  available over `ws://` and `wss://`
 
 These prefixes are stripped, so the backends keep their original routes such as `/health` or `/metrics`.
 

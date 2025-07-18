@@ -9,6 +9,9 @@ npm run dev
 
 The app will be available at http://localhost:5173.
 
+Set `VITE_API_BASE` to the backend URL (e.g. `http://localhost:8000`) to enable
+API calls from the dashboard.
+
 ### Static assets
 
 Additional files placed under `public/` are copied verbatim to the production

@@ -23,6 +23,12 @@ http:
       service: context-adapter
       entryPoints: [web]
 
+    ws-secure:
+      rule: "Host(`ports360.online`) && PathPrefix(`/ws`)"
+      service: context-adapter
+      entryPoints: [websecure]
+      tls: {}
+
     dashboard:
       rule: "Host(`ports360.online`) && PathPrefix(`/`)"
       service: dashboard

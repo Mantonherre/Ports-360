@@ -19,7 +19,7 @@ fail to boot.
 
 The sample FastAPI service is available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-Add `smartport.local` to `/etc/hosts` pointing to `127.0.0.1` to access the stack through Traefik using HTTPS.
+Add `ports360.online` to `/etc/hosts` pointing to `127.0.0.1` to access the stack through Traefik using HTTPS.
 
 Traefik exposes the internal services under distinct path prefixes:
 

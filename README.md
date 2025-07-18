@@ -96,6 +96,22 @@ npm run build
 npm start
 ```
 
+### Ejemplo de consulta GraphQL
+
+El servicio Twin Core protege su API frente a ataques CSRF, por lo que las
+peticiones deben incluir las cabeceras adecuadas. Si accedes al servicio a
+través de Traefik, la ruta es `http://localhost:8000/gql`; de manera directa, es
+`http://localhost:8030/`.
+
+Ejemplo con `curl`:
+
+```bash
+curl -X POST http://localhost:8000/gql \
+  -H 'Content-Type: application/json' \
+  -H 'x-apollo-operation-name: Test' \
+  -d '{"query":"{ __typename }"}'
+```
+
 ### Dashboard web
 
 ```bash

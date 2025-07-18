@@ -45,7 +45,7 @@ def services():
 
 @pytest.mark.asyncio
 async def test_insert(services):
-    os.environ["PGHOST"] = "localhost"
+    os.environ["PGHOST"] = "localhost:15432"
     os.environ["PGUSER"] = "postgres"
     os.environ["PGPASSWORD"] = "smartport"
     os.environ["PGDATABASE"] = "postgres"
@@ -75,7 +75,11 @@ async def test_insert(services):
             await asyncio.sleep(2)
 
     conn = await asyncpg.connect(
-        host="localhost", user="postgres", password="smartport", database="postgres"
+        host="localhost",
+        port=15432,
+        user="postgres",
+        password="smartport",
+        database="postgres",
     )
     count = await conn.fetchval("SELECT count(*) FROM sensor_snapshot")
     await conn.close()

@@ -71,6 +71,12 @@ async def startup():
     app.mqtt_task = asyncio.create_task(mqtt_worker())
 
 
+@app.get("/health")
+async def health() -> dict:
+    """Simple health check endpoint."""
+    return {"status": "ok"}
+
+
 @app.get("/metrics")
 async def metrics() -> Response:
     """Return Prometheus metrics."""

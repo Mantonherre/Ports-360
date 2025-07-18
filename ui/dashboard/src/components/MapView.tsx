@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Circle, Tooltip } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import { useStore } from '../utils/ws'
+import { useStore } from '../utils/mock'
 
 export default function MapView() {
   const bathy = useStore(s => s.bathyPoints)

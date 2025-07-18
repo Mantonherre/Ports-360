@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import EnergyGauge from '../EnergyGauge'
-import { WebSocketProvider } from '../../utils/ws'
+import { FakeDataProvider } from '../../utils/mock'
 
 describe('EnergyGauge', () => {
   it('renders gauge', () => {
     const { getByText } = render(
-      <WebSocketProvider>
+      <FakeDataProvider>
         <EnergyGauge />
-      </WebSocketProvider>,
+      </FakeDataProvider>,
     )
     expect(getByText(/State of Charge/i)).toBeTruthy()
   })

@@ -1,5 +1,6 @@
 import MapView from './components/MapView'
 import SensorTable from './components/SensorTable'
+import SensorControls from './components/SensorControls'
 import EnergyGauge from './components/EnergyGauge'
 import { FakeDataProvider } from './utils/mock'
 
@@ -15,6 +16,9 @@ export default function App() {
         </div>
         <div className="bg-white p-4 rounded shadow">
           <SensorTable />
+        </div>
+        <div className="bg-white p-4 rounded shadow">
+          <SensorControls />
         </div>
       </div>
     </FakeDataProvider>

@@ -6,7 +6,7 @@ import { FakeDataProvider } from './utils/mock'
 
 export default function App() {
   return (
-    <FakeDataProvider>
+    <FakeDataProvider auto={false}>
       <div className="container mx-auto p-4 grid gap-4 grid-cols-1 md:grid-cols-2">
         <div className="h-96 md:row-span-2">
           <MapView />

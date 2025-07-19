@@ -20,6 +20,7 @@ fail to boot.
 The sample FastAPI service is available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 Add `ports360.online` to `/etc/hosts` pointing to `127.0.0.1` to access the stack through Traefik using HTTPS.
+Once the containers are up you can open the dashboard at [https://ports360.online/](https://ports360.online/).
 
 Traefik exposes the internal services under distinct path prefixes:
 
@@ -127,6 +128,7 @@ cd ui/dashboard
 npm install
 npm run dev
 ```
+The development server runs at [http://localhost:5173](http://localhost:5173). When started via Docker Compose, the dashboard is reachable at [https://ports360.online/](https://ports360.online/).
 
 ## Documentación adicional
 

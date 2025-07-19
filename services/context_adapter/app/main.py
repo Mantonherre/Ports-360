@@ -17,7 +17,7 @@ import asyncio
 from jsonschema import validate, ValidationError
 
 from .schema_cache import get_schema
-from libs.auth_middleware import auth_dependency
+from libs.auth_middleware import auth_dependency, get_password_token
 
 MQTT_HOST = os.getenv("MQTT_HOST", "mqtt")
 MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))
@@ -81,6 +81,17 @@ async def health() -> dict:
 async def metrics() -> Response:
     """Return Prometheus metrics."""
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
+
+@app.post("/auth/login")
+async def login(payload: dict) -> dict:
+    """Return JWT for dashboard users."""
+    username = payload.get("username")
+    password = payload.get("password")
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="missing credentials")
+    token = get_password_token("dashboard", username, password)
+    return {"access_token": token}
 
 
 @app.on_event("shutdown")

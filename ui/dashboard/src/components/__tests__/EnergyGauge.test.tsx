@@ -6,7 +6,7 @@ import { FakeDataProvider } from '../../utils/mock'
 describe('EnergyGauge', () => {
   it('renders gauge', () => {
     const { getByText } = render(
-      <FakeDataProvider>
+      <FakeDataProvider auto={false}>
         <EnergyGauge />
       </FakeDataProvider>,
     )

@@ -6,7 +6,7 @@ import { FakeDataProvider } from '../../utils/mock'
 describe('MapView', () => {
   it('renders without crashing', () => {
     render(
-      <FakeDataProvider>
+      <FakeDataProvider auto={false}>
         <div style={{ height: 400 }}>
           <MapView />
         </div>

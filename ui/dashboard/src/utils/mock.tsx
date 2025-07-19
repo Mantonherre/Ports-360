@@ -20,12 +20,46 @@ interface State {
   bathyPoints: BathyPoint[]
   sensorReadings: SensorReading[]
   stateOfCharge: number
+  addSensor: (id: string, value: number, property?: string, unit?: string) => void
+  updateSensor: (id: string, value: number) => void
+  removeSensor: (id: string) => void
 }
 
-export const useStore = create<State>(() => ({
+export const useStore = create<State>((set, get) => ({
   bathyPoints: [],
   sensorReadings: [],
   stateOfCharge: 0,
+  addSensor: (id, value, property = 'manual', unit = 'C') => {
+    const reading = {
+      id,
+      property,
+      value,
+      unit,
+      timestamp: new Date().toISOString(),
+    }
+    set(state => {
+      const readings = [reading, ...state.sensorReadings]
+      return { sensorReadings: readings.slice(0, 10) }
+    })
+  },
+  updateSensor: (id, value) => {
+    const reading = {
+      id,
+      property: 'manual',
+      value,
+      unit: 'C',
+      timestamp: new Date().toISOString(),
+    }
+    set(state => {
+      const filtered = state.sensorReadings.filter(r => r.id !== id)
+      return { sensorReadings: [reading, ...filtered].slice(0, 10) }
+    })
+  },
+  removeSensor: id => {
+    set(state => ({
+      sensorReadings: state.sensorReadings.filter(r => r.id !== id),
+    }))
+  },
 }))
 
 function randomBathyPoint(): BathyPoint {
@@ -59,8 +93,15 @@ function randomSoc(): number {
   return Math.round(Math.random() * 100)
 }
 
-export function FakeDataProvider({ children }: { children: React.ReactNode }) {
+export function FakeDataProvider({
+  children,
+  auto = true,
+}: {
+  children: React.ReactNode
+  auto?: boolean
+}) {
   useEffect(() => {
+    if (!auto) return
     const bathy = setInterval(() => {
       const point = randomBathyPoint()
       useStore.setState(state => ({ bathyPoints: [...state.bathyPoints, point] }))
@@ -83,6 +124,6 @@ export function FakeDataProvider({ children }: { children: React.ReactNode }) {
       clearInterval(sensor)
       clearInterval(soc)
     }
-  }, [])
+  }, [auto])
   return <>{children}</>
 }

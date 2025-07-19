@@ -6,7 +6,7 @@ import { FakeDataProvider } from '../../utils/mock'
 describe('SensorControls', () => {
   it('renders controls', () => {
     const { getByText } = render(
-      <FakeDataProvider>
+      <FakeDataProvider auto={false}>
         <SensorControls />
       </FakeDataProvider>,
     )
